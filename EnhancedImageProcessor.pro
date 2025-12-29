@@ -10,10 +10,12 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    enhancedimageprocessor.cpp
+    enhancedimageprocessor.cpp \
+    resultwindow.cpp
 
 HEADERS += \
-    enhancedimageprocessor.h
+    enhancedimageprocessor.h \
+    resultwindow.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

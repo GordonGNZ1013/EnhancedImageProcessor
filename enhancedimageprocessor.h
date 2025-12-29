@@ -11,6 +11,9 @@
 #include <QSpacerItem>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QAction>
+#include <QMenu>
+#include <QToolBar>
 
 class EnhancedImageProcessor : public QMainWindow
 {
@@ -23,11 +26,21 @@ public:
 private slots:
     void openImage();
     void saveImage();
+    void zoomIn();
+    void zoomOut();
     void mirroredImage();
     void rotatedImage();
+    void binaryImage();
+    void histogramImage();
+    void thresholdImage();
 
 private:
     void setupUI();
+    void createActions();
+    void createMenus();
+    void createToolBars();
+    void loadFile(const QString &filename);
+    void showResultWindow(const QImage &image, const QString &title);
     
     QWidget         *centralWidget;
     QLabel          *inWin;
@@ -42,5 +55,25 @@ private:
     QVBoxLayout     *leftLayout;
     QImage          srcImg;
     QImage          dstImg;
+    QImage          originalImg;
+    QString         currentFileName;
+    
+    // Actions
+    QAction         *openAction;
+    QAction         *saveAction;
+    QAction         *exitAction;
+    QAction         *zoomInAction;
+    QAction         *zoomOutAction;
+    QAction         *geometricAction;
+    QAction         *binaryAction;
+    QAction         *histogramAction;
+    QAction         *thresholdAction;
+    
+    // Menus
+    QMenu           *fileMenu;
+    QMenu           *toolMenu;
+    
+    // Toolbar
+    QToolBar        *mainToolBar;
 };
 #endif // ENHANCEDIMAGEPROCESSOR_H
