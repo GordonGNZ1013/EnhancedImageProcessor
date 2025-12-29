@@ -14,6 +14,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QToolBar>
+#include <QMouseEvent>
 
 class EnhancedImageProcessor : public QMainWindow
 {
@@ -33,6 +34,9 @@ private slots:
     void binaryImage();
     void histogramImage();
     void thresholdImage();
+
+protected:
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     void setupUI();

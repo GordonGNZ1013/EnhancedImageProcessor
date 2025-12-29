@@ -23,6 +23,11 @@ EnhancedImageProcessor::EnhancedImageProcessor(QWidget *parent)
     createActions();
     createMenus();
     createToolBars();
+    
+    // 啟用滑鼠追蹤以接收移動事件
+    setMouseTracking(true);
+    centralWidget->setMouseTracking(true);
+    inWin->setMouseTracking(true);
 }
 
 EnhancedImageProcessor::~EnhancedImageProcessor()
@@ -443,4 +448,42 @@ void EnhancedImageProcessor::thresholdImage()
     
     showResultWindow(thresholdImg, 
         QStringLiteral("閾值化結果 (閾值=%1)").arg(threshold));
+}
+
+void EnhancedImageProcessor::mouseMoveEvent(QMouseEvent *event)
+{
+    // 取得滑鼠在視窗中的位置
+    QPoint globalPos = event->pos();
+    
+    // 取得圖像標籤相對於主視窗的位置
+    QPoint labelPos = inWin->mapTo(this, QPoint(0, 0));
+    
+    // 計算滑鼠相對於圖像標籤的位置
+    int x = globalPos.x() - labelPos.x();
+    int y = globalPos.y() - labelPos.y();
+    
+    // 檢查滑鼠是否在圖像標籤範圍內
+    if (x >= 0 && x < inWin->width() && y >= 0 && y < inWin->height() && !dstImg.isNull()) {
+        // 計算相對於實際圖像的座標（考慮縮放）
+        double scaleX = (double)dstImg.width() / inWin->width();
+        double scaleY = (double)dstImg.height() / inWin->height();
+        
+        int imgX = (int)(x * scaleX);
+        int imgY = (int)(y * scaleY);
+        
+        // 確保座標在圖像範圍內
+        if (imgX >= 0 && imgX < dstImg.width() && imgY >= 0 && imgY < dstImg.height()) {
+            // 取得該像素的灰階值
+            QRgb pixel = dstImg.pixel(imgX, imgY);
+            int grayValue = qGray(pixel);
+            
+            // 在狀態列顯示座標和灰階值
+            QString statusText = QStringLiteral("座標(%1, %2)    指標位置: (%1, %2)    灰階值: %3")
+                .arg(imgX).arg(imgY).arg(grayValue);
+            statusBar()->showMessage(statusText);
+        }
+    } else {
+        // 滑鼠不在圖像區域時清除狀態列
+        statusBar()->clearMessage();
+    }
 }
